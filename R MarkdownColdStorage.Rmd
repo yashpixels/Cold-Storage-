@@ -1,0 +1,166 @@
+---
+title: "ColdStorage"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup}
+knitr::opts_knit$set(root.dir = 'C:/Users/Hp/Desktop/R Programming')
+```
+
+## Invoking Libraries
+
+```{r}
+library(ggplot2)
+library(lattice)
+library(rmarkdown)
+library(dplyr)
+```
+
+## Seting up the working directory
+
+```{r}
+setwd("C:/Users/Hp/Desktop/R Programming")
+getwd()
+```
+
+## Importing data
+
+```{r}
+storage <- read.csv("Cold_Storage_Temp_Data.csv")
+```
+
+## Top 15 entries on the dataset
+
+```{r}
+head(storage , 15)
+```
+
+## Bottom 15 entries of the dataset
+
+```{r}
+tail(storage , 15)
+```
+
+## Dimensions of dataset
+
+```{r}
+dim(storage)
+```
+
+## Column names of the dataset
+
+```{r}
+colnames(storage)
+```
+
+## Structure of the dataset
+
+```{r}
+str(storage)
+```
+
+## Summary of the dataset
+
+```{r}
+summary(storage)
+```
+
+## Referencing column names without $ 
+
+```{r}
+attach(storage)
+```
+
+## Summary of dataset grouped by indices/factor "season" 
+
+```{r}
+by(storage, INDICES = Season, FUN = summary)
+```
+
+## Mean temperature in rainy season
+
+```{r}
+RainySeason <- storage[Season == "Rainy", ]
+mean(RainySeason$Temperature)
+```
+
+## Mean temperature in summer season
+
+```{r}
+Summerseason <- storage[Season == "Summer", ]
+mean(Summerseason$Temperature)
+``` 
+
+## Mean temperature in winter season 
+
+```{r}
+Winterseason <- storage[Season == "Winter", ]
+mean(Winterseason$Temperature)
+```
+
+## Overall mean temperature for the entire year 
+
+```{r}
+Mean <- mean(Temperature)
+Mean
+```
+
+## Standard Deviation of temperature for the entire year
+ 
+```{r}
+StandardDeviation <- sd(Temperature)
+StandardDeviation
+```
+
+## Maximum & Minimum temperature in a year
+
+```{r}
+max(Temperature)
+min(Temperature)
+```
+
+## Univariate Analysis
+
+```{r}
+boxplot(Temperature , xlab = "Temperature in Deg C" , main = "Boxplot of Temperature" , col = "Blue",
+        horizontal = TRUE)
+hist(Temperature, xlab = "Temperature in Deg C", col = "Blue")
+```
+
+## Univariate Analysis using ggplot2
+
+```{r}
+qplot(Temperature, data = storage , geom = "density" , fill = Season,  xlab = "Temperature in Deg C" , ylab = "Freuency") + ggtitle("Density Frequency of Temp by Season") + theme(plot.title = element_text(hjust = 0.5)) + geom_density(alpha =0.8)
+
+ggplot(storage, aes(x = Temperature, fill = Month, alpha = 0.2)) + geom_density() + ggtitle("Density of Temperature monthly") + theme(plot.title = element_text(hjust = 0.5))
+
+qplot(Temperature, data = storage  , fill = Season, 
+      xlab = "Temperature in Deg C" , ylab = "Freuency") + ggtitle("Density Frequency of Temp by Season") + theme(plot.title = element_text(hjust = 0.5)) + geom_bar()    
+```
+
+
+## Bivariate Analysis 
+
+```{r}
+boxplot(Temperature~Season , col = c("red","green","blue"), horizontal = TRUE ,
+        xlab = "Temperature in Deg C", ylab = "Season")
+ggplot(storage, aes(x = Season, y = Temperature, fill = Month)) + geom_boxplot() + ggtitle("Boxplot distribution of season for temperature") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(storage, aes(x = Month, y = Temperature, fill = Season  )) + geom_boxplot() + ggtitle("Boxplot representation of Months for Temperture") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+## Probability of temperature falling below 2 deg C
+
+```{r}
+pnorm(2,Mean,StandardDeviation)
+```
+
+## Probability of temperature going above 4 deg C
+
+```{r}
+1 - pnorm(4,Mean,StandardDeviation)
+```
+
