@@ -1,0 +1,169 @@
+ColdStorage
+knitr::opts_knit$set(root.dir = 'C:/Users/Hp/Desktop/R Programming')
+Invoking Libraries
+library(ggplot2)
+library(lattice)
+library(rmarkdown)
+library(dplyr)
+
+## Warning: package 'dplyr' was built under R version 3.6.1
+## 
+## Attaching package: 'dplyr'
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+Seting up the working directory
+setwd("C:/Users/Hp/Desktop/R Programming")
+getwd()
+## [1] "C:/Users/Hp/Desktop/R Programming"
+Importing data
+storage <- read.csv("Cold_Storage_Temp_Data.csv")
+Top 15 entries on the dataset
+head(storage , 15)
+##    Season Month Date Temperature
+## 1  Winter   Jan    1         2.4
+## 2  Winter   Jan    2         2.3
+## 3  Winter   Jan    3         2.4
+## 4  Winter   Jan    4         2.8
+## 5  Winter   Jan    5         2.5
+## 6  Winter   Jan    6         2.4
+## 7  Winter   Jan    7         2.8
+## 8  Winter   Jan    8         2.3
+## 9  Winter   Jan    9         2.4
+## 10 Winter   Jan   10         2.8
+## 11 Winter   Jan   11         2.4
+## 12 Winter   Jan   12         2.5
+## 13 Winter   Jan   13         2.6
+## 14 Winter   Jan   14         2.8
+## 15 Winter   Jan   15         3.4
+Bottom 15 entries of the dataset
+tail(storage , 15)
+##     Season Month Date Temperature
+## 351 Winter   Dec   17         2.5
+## 352 Winter   Dec   18         2.5
+## 353 Winter   Dec   19         2.5
+## 354 Winter   Dec   20         2.5
+## 355 Winter   Dec   21         2.6
+## 356 Winter   Dec   22         3.3
+## 357 Winter   Dec   23         3.0
+## 358 Winter   Dec   24         3.7
+## 359 Winter   Dec   25         3.2
+## 360 Winter   Dec   26         2.7
+## 361 Winter   Dec   27         2.7
+## 362 Winter   Dec   28         2.3
+## 363 Winter   Dec   29         2.6
+## 364 Winter   Dec   30         2.3
+## 365 Winter   Dec   31         2.9
+Dimensions of dataset
+dim(storage)
+## [1] 365   4
+Column names of the dataset
+colnames(storage)
+## [1] "Season"      "Month"       "Date"        "Temperature"
+Structure of the dataset
+str(storage)
+## 'data.frame':    365 obs. of  4 variables:
+##  $ Season     : Factor w/ 3 levels "Rainy","Summer",..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ Month      : Factor w/ 12 levels "Apr","Aug","Dec",..: 5 5 5 5 5 5 5 5 5 5 ...
+##  $ Date       : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ Temperature: num  2.4 2.3 2.4 2.8 2.5 2.4 2.8 2.3 2.4 2.8 ...
+Summary of the dataset
+summary(storage)
+##     Season        Month          Date        Temperature   
+##  Rainy :122   Aug    : 31   Min.   : 1.00   Min.   :1.700  
+##  Summer:120   Dec    : 31   1st Qu.: 8.00   1st Qu.:2.500  
+##  Winter:123   Jan    : 31   Median :16.00   Median :2.900  
+##               Jul    : 31   Mean   :15.72   Mean   :2.963  
+##               Mar    : 31   3rd Qu.:23.00   3rd Qu.:3.300  
+##               May    : 31   Max.   :31.00   Max.   :5.000  
+##               (Other):179
+Referencing column names without $
+attach(storage)
+Summary of dataset grouped by indices/factor “season”
+by(storage, INDICES = Season, FUN = summary)
+## Season: Rainy
+##     Season        Month         Date        Temperature   
+##  Rainy :122   Aug    :31   Min.   : 1.00   Min.   :1.700  
+##  Summer:  0   Jul    :31   1st Qu.: 8.00   1st Qu.:2.500  
+##  Winter:  0   Jun    :30   Median :16.00   Median :2.900  
+##               Sep    :30   Mean   :15.75   Mean   :3.039  
+##               Apr    : 0   3rd Qu.:23.00   3rd Qu.:3.300  
+##               Dec    : 0   Max.   :31.00   Max.   :5.000  
+##               (Other): 0                                  
+## -------------------------------------------------------- 
+## Season: Summer
+##     Season        Month         Date        Temperature   
+##  Rainy :  0   Mar    :31   Min.   : 1.00   Min.   :2.500  
+##  Summer:120   May    :31   1st Qu.: 8.00   1st Qu.:2.800  
+##  Winter:  0   Apr    :30   Median :15.50   Median :3.200  
+##               Feb    :28   Mean   :15.53   Mean   :3.153  
+##               Aug    : 0   3rd Qu.:23.00   3rd Qu.:3.400  
+##               Dec    : 0   Max.   :31.00   Max.   :4.100  
+##               (Other): 0                                  
+## -------------------------------------------------------- 
+## Season: Winter
+##     Season        Month         Date        Temperature   
+##  Rainy :  0   Dec    :31   Min.   : 1.00   Min.   :1.900  
+##  Summer:  0   Jan    :31   1st Qu.: 8.00   1st Qu.:2.400  
+##  Winter:123   Oct    :31   Median :16.00   Median :2.600  
+##               Nov    :30   Mean   :15.88   Mean   :2.701  
+##               Apr    : 0   3rd Qu.:23.50   3rd Qu.:2.900  
+##               Aug    : 0   Max.   :31.00   Max.   :3.900  
+##               (Other): 0
+Mean temperature in rainy season
+RainySeason <- storage[Season == "Rainy", ]
+mean(RainySeason$Temperature)
+## [1] 3.039344
+Mean temperature in summer season
+Summerseason <- storage[Season == "Summer", ]
+mean(Summerseason$Temperature)
+## [1] 3.153333
+Mean temperature in winter season
+Winterseason <- storage[Season == "Winter", ]
+mean(Winterseason$Temperature)
+## [1] 2.700813
+Overall mean temperature for the entire year
+Mean <- mean(Temperature)
+Mean
+## [1] 2.96274
+Standard Deviation of temperature for the entire year
+StandardDeviation <- sd(Temperature)
+StandardDeviation
+## [1] 0.508589
+Maximum & Minimum temperature in a year
+max(Temperature)
+## [1] 5
+min(Temperature)
+## [1] 1.7
+Univariate Analysis
+boxplot(Temperature , xlab = "Temperature in Deg C" , main = "Boxplot of Temperature" , col = "Blue",
+        horizontal = TRUE)
+ 
+hist(Temperature, xlab = "Temperature in Deg C", col = "Blue")
+ 
+Univariate Analysis using ggplot2
+qplot(Temperature, data = storage , geom = "density" , fill = Season,  xlab = "Temperature in Deg C" , ylab = "Freuency") + ggtitle("Density Frequency of Temp by Season") + theme(plot.title = element_text(hjust = 0.5)) + geom_density(alpha =0.8)
+ 
+ggplot(storage, aes(x = Temperature, fill = Month, alpha = 0.2)) + geom_density() + ggtitle("Density of Temperature monthly") + theme(plot.title = element_text(hjust = 0.5))
+ 
+qplot(Temperature, data = storage  , fill = Season, 
+      xlab = "Temperature in Deg C" , ylab = "Freuency") + ggtitle("Density Frequency of Temp by Season") + theme(plot.title = element_text(hjust = 0.5)) + geom_bar()    
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+ 
+Bivariate Analysis
+boxplot(Temperature~Season , col = c("red","green","blue"), horizontal = TRUE ,
+        xlab = "Temperature in Deg C", ylab = "Season")
+ 
+ggplot(storage, aes(x = Season, y = Temperature, fill = Month)) + geom_boxplot() + ggtitle("Boxplot distribution of season for temperature") + theme(plot.title = element_text(hjust = 0.5))
+ 
+ggplot(storage, aes(x = Month, y = Temperature, fill = Season  )) + geom_boxplot() + ggtitle("Boxplot representation of Months for Temperture") + theme(plot.title = element_text(hjust = 0.5))
+ 
+Probability of temperature falling below 2 deg C
+pnorm(2,Mean,StandardDeviation)
+## [1] 0.02918146
+Probability of temperature going above 4 deg C
+1 - pnorm(4,Mean,StandardDeviation)
+## [1] 0.02070077
